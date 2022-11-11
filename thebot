@@ -119,9 +119,9 @@ local function GetClosestPlayer()
 				if v.Character and v.Character:WaitForChild(Environment.Settings.LockPart) then
 					if Environment.Settings.TeamCheck and v.Team == LocalPlayer.Team then continue end
 					if Environment.Settings.AliveCheck and v.Character.Humanoid.Health <= 0 then continue end
-					if Environment.Settings.WallCheck and #(Camera:GetPartsObscuringTarget({v.Character[Environment.Settings.LockPart].Position}, v.Character:GetDescendants())) > 0 then continue end
+					if Environment.Settings.WallCheck and #(Camera:GetPartsObscuringTarget({v.Character:WaitForChild(Environment.Settings.LockPart).Position}, v.Character:GetDescendants())) > 0 then continue end
 
-					local Vector, OnScreen = Camera:WorldToViewportPoint(v.Character[Environment.Settings.LockPart].Position)
+					local Vector, OnScreen = Camera:WorldToViewportPoint(v.Character:WaitForChild(Environment.Settings.LockPart).Position)
 					local Distance = (Vector2.new(UserInputService:GetMouseLocation().X, UserInputService:GetMouseLocation().Y) - Vector2.new(Vector.X, Vector.Y)).Magnitude
 
 					if Distance < RequiredDistance and OnScreen then
@@ -131,7 +131,7 @@ local function GetClosestPlayer()
 				end
 			end
 		end
-	elseif (Vector2.new(UserInputService:GetMouseLocation().X, UserInputService:GetMouseLocation().Y) - Vector2.new(Camera:WorldToViewportPoint(Environment.Locked.Character[Environment.Settings.LockPart].Position).X, Camera:WorldToViewportPoint(Environment.Locked.Character[Environment.Settings.LockPart].Position).Y)).Magnitude > RequiredDistance then
+	elseif (Vector2.new(UserInputService:GetMouseLocation().X, UserInputService:GetMouseLocation().Y) - Vector2.new(Camera:WorldToViewportPoint(Environment.Locked.Character:WaitForChild(Environment.Settings.LockPart).Position).X, Camera:WorldToViewportPoint(Environment.Locked.Character:WaitForChild(Environment.Settings.LockPart).Position).Y)).Magnitude > RequiredDistance then
 		Environment.Locked = nil
 		Animation:Cancel()
 		Environment.FOVCircle.Color = GetColor(Environment.FOVSettings.Color)
@@ -203,11 +203,11 @@ local function Load()
 			if Environment.Settings.ThirdPerson then
 				Environment.Settings.ThirdPersonSensitivity = math.clamp(Environment.Settings.ThirdPersonSensitivity, 0.1, 5)
 
-				local Vector = Camera:WorldToViewportPoint(Environment.Locked.Character[Environment.Settings.LockPart].Position)
+				local Vector = Camera:WorldToViewportPoint(Environment.Locked.Character:WaitForChild(Environment.Settings.LockPart).Position)
 				mousemoverel((Vector.X - UserInputService:GetMouseLocation().X) * Environment.Settings.ThirdPersonSensitivity, (Vector.Y - UserInputService:GetMouseLocation().Y) * Environment.Settings.ThirdPersonSensitivity)
 			else
 				if Environment.Settings.Sensitivity > 0 then
-					Animation = TweenService:Create(Camera, TweenInfo.new(Environment.Settings.Sensitivity, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {CFrame = CFrame.new(Camera.CFrame.Position, Environment.Locked.Character[Environment.Settings.LockPart].Position)})
+					Animation = TweenService:Create(Camera, TweenInfo.new(Environment.Settings.Sensitivity, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {CFrame = CFrame.new(Camera.CFrame.Position, Environment.Locked.Character:WaitForChild(Environment.Settings.LockPart).Position)})
 					Animation:Play()
 				else
 					Camera.CFrame = CFrame.new(Camera.CFrame.Position, Environment.Locked.Character:WaitForChild(Environment.Settings.LockPart).Position)
